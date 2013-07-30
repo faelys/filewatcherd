@@ -1,0 +1,6 @@
+  * document the internals
+  * fix implicit HOME in first entry considered as explicit in following entries
+  * deal with command output
+  * check how signals interfere with current code
+  * think about how to handle multiple watchtabs
+  * support locking watchtabs to specific users, to make a safe multiuser system daemon
