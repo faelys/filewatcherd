@@ -215,7 +215,8 @@ wentry_free(struct watch_entry *wentry) {
 /*   Return 0 on success or -1 on failure. */
 int
 wentry_readline(struct watch_entry *dest, char *line,
-    struct watch_env *base_env, const char *filename, unsigned line_no) {
+    struct watch_env *base_env, int has_home,
+    const char *filename, unsigned line_no) {
 	size_t path_len = 0;
 	size_t event_first = 0, event_len = 0;
 	size_t delay_first = 0, delay_len = 0;
@@ -390,7 +391,7 @@ wentry_readline(struct watch_entry *dest, char *line,
 	/* Setup environment */
 	wenv_set(base_env, "LOGNAME", pw->pw_name, 1);
 	wenv_set(base_env, "USER", pw->pw_name, 1);
-	wenv_set(base_env, "HOME", pw->pw_dir, 0);
+	wenv_set(base_env, "HOME", pw->pw_dir, !has_home);
 	wenv_set(base_env, "TRIGGER", dest->path, 1);
 	dest->envp = wenv_dup(base_env);
 
@@ -579,7 +580,7 @@ wtab_readfile(struct watchtab *tab, FILE *input, const char *filename) {
 	ssize_t linelen;
 	unsigned line_no = 0;
 	struct watch_entry *entry = 0;
-	int result = 0;
+	int result = 0, has_home = 0;
 	size_t i, skip;
 	struct watch_env env;
 
@@ -629,6 +630,10 @@ wtab_readfile(struct watchtab *tab, FILE *input, const char *filename) {
 			while (line[j] == ' ' && j > skip) j--;
 			if (j + 1 < i) line[j + 1] = 0;
 
+			/* Check whether this explicitly sets HOME */
+			if (strcmp(line + skip, "HOME") == 0)
+				has_home = 1;
+
 			/* Compute bounds of variable value */
 			j = i + 1;
 			while (line[j] == ' ') j++;
@@ -645,7 +650,7 @@ wtab_readfile(struct watchtab *tab, FILE *input, const char *filename) {
 			return -1;
 		}
 		wentry_init(entry);
-		if (wentry_readline(entry, line + skip, &env,
+		if (wentry_readline(entry, line + skip, &env, has_home,
 		    filename, line_no) < 0) {
 			/* propagate an error but keep parsing */
 			result = -1;

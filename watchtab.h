@@ -73,7 +73,8 @@ wentry_free(struct watch_entry *wentry);
 /* wentry_readline - parse a config file line and fill a struct watch_entry */
 int
 wentry_readline(struct watch_entry *dest, char *line,
-    struct watch_env *base_env, const char *filename, unsigned line_no);
+    struct watch_env *base_env, int has_home,
+    const char *filename, unsigned line_no);
 
 
 /* wenv_init - create an empty environment list */
