@@ -327,7 +327,7 @@ wentry_readline(struct watch_entry *dest, char *line,
 		char *login = line + user_first;
 		char *group = 0;
 
-		line[user_len] = 0;
+		line[user_first + user_len] = 0;
 
 		/* Process group */
 		group = strchr(login, ':');
