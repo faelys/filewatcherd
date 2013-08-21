@@ -283,3 +283,21 @@ void
 log_watchtab_read(void) {
 	report(LOG_ERR, "Error while reading from watchtab");
 }
+
+
+/* print_usage - output usage text upon request or after argument error */
+void
+print_usage(int after_error, int argc, char **argv) {
+	(void)argc;
+
+	fprintf(after_error ? stderr : stdout,
+	    "Usage: %s [-dh] [-f delay_ms] watchtab\n\n"
+	    "\t-d, --foreground\n"
+	    "\t\tDon't fork to background and log to stderr\n"
+	    "\t-h, --help\n"
+	    "\t\tDisplay this help text\n"
+	    "\t-w, --wait delay_ms\n"
+	    "\t\tWait that number of milliseconds after watchtab\n"
+	    "\t\tchanges before reloading it\n",
+	    argv[0]);
+}

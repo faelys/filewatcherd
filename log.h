@@ -165,4 +165,8 @@ log_watchtab_loaded(const char *path);
 void
 log_watchtab_read(void);
 
+/* print_usage - output usage text upon request or after argument error */
+void
+print_usage(int after_error, int argc, char **argv);
+
 #endif /* ndef FILEWATCHER_LOG_H */

@@ -121,17 +121,8 @@ main(int argc, char **argv) {
 
 	/* Display help text and terminate */
 	if (argerr || help) {
-		fprintf(argerr ? stderr : stdout,
-		    "Usage: %s [-dh] [-f delay_ms] watchtab\n\n"
-		    "\t-d, --foreground\n"
-		    "\t\tDon't fork to background and log to stderr\n"
-		    "\t-h, --help\n"
-		    "\t\tDisplay this help text\n"
-		    "\t-w, --wait delay_ms\n"
-		    "\t\tWait that number of milliseconds after watchtab\n"
-		    "\t\tchanges before reloading it\n",
-		    argv[0]);
-		return argerr ? EXIT_FAILURE : EXIT_SUCCESS;
+		print_usage(!help, argc, argv);
+		return help ? EXIT_SUCCESS : EXIT_FAILURE;
 	}
 
 
