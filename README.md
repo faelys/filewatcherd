@@ -37,7 +37,7 @@ In path, `chroot` and command fields, backslashes (`\\`) act as an escape
 character, allowing to embed tabulations, backslashes and/or equal signs
 in those fields without misinterpretation.
 
-The event set can be a single star sign (`*`) to mean all available event,
+The event set can be a single star sign (`*`) to mean all available events,
 or a list of any number of event names separated by a single non-letter
 byte. The available events are `delete`, `write`, `extend`, `attrib`,
 `link`, `rename` and `revoke`, with semantics matching those of
@@ -70,4 +70,57 @@ automatically reloaded when it changes.
 
 # Internals
 
-Coming soon.
+## Source organization
+
+`filewatcherd` is split between 4 `.c` modules:
+
+  * `log.c` implements logging functions, which means all user-facing
+output
+  * `watchtab.c` implements watchtab parsing and upkeep of structures
+related to watchtab entries
+  * `run.c` implements actual execution of a watchtab entry
+  * `filewatcherd.c` implements the event loop directly in `main()`
+function
+
+## Event loop overview
+
+### Watchtab entries
+
+Watchtab entries oscillate between two states:
+
+  * waiting for an `EVFILT_VNODE` event described in the watchtab,
+which triggers execution of the associated command
+  * waiting for an `EVFILT_PROC` event that signals the end of the command
+to switch back to `EVFILT_VNODE` wait.
+
+Events are not reused, at each step of cycle a new one is added to the
+kernel queue with `EV_ONESHOT` flag.
+
+This architecture guarantees that there cannot be more than one file
+descriptor per watchtab entry or more than one process started per watchtab
+entry. System resources consumed by `filewatcherd` are therefore bounded
+by the watchtab length.
+
+Whenever an error happens, e.g. when spawning the command or opening the
+watched path, the cycle is broken and the watchtab entry becomes inactive
+until the watchtab is reloaded.
+
+There is currently no way to re-enable a single inactive watchtab entry.
+
+### Watchtab watcher
+
+The watchtab file itself is also watched by `filewatcherd`, in a process
+similar to a watchtab entry except that `EVFILT_VNODE` events trigger an
+`EVFILT_TIMER` addition before reloading the file.
+
+Errors are handled so that this cycle can only be broken by a failure to
+insert an event in the queue:
+
+  * When the watchtab file cannot be opened, the timer event is left in the
+kernel queue to trigger another attempt after the delay. To prevent log
+spamming, only the first failure is logged, even though subsequent failures
+might have other causes.
+  * When the watchtab file is opened, the timer event is removed and an
+`EVFILT_VNODE` filter is added to track watchtab changes. Should a parse
+error occurs, the old watchtab is used instead, and a subsequent change in
+the watchtab file will trigger a reload.

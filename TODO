@@ -1,4 +1,3 @@
-  * document the internals
   * deal with command output
   * check how signals interfere with current code
   * think about how to handle multiple watchtabs
