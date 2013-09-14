@@ -16,9 +16,9 @@
 
 DEPDIR=depends
 ALLDEPS=$(DEPDIR)/all
-CFLAGS=-g -O3 -Wall -Wextra -Werror
-LDFLAGS=-g -O3 -Wall -Wextra -Werror
-CC=gcc
+CFLAGS?=-g -O3 -Wall -Wextra -Werror
+LDFLAGS?=-g -O3 -Wall -Wextra -Werror
+CC?=gcc
 
 all:		filewatcherd
 
