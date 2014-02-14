@@ -146,6 +146,12 @@ main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	log_watchtab_loaded(tabpath);
 
+	/* Fork to background */
+	if (daemonize) {
+		daemon(0, 0);
+		set_report(&syslog);
+	}
+
 	/* Create a kernel queue */
 	kq = kqueue();
 	if (kq == -1) {
@@ -162,12 +168,6 @@ main(int argc, char **argv) {
 	if (kevent(kq, &event, 1, 0, 0, 0) < 0) {
 		log_kevent_watchtab(tabpath);
 		return EXIT_FAILURE;
-	}
-
-	/* Fork to background */
-	if (daemonize) {
-		daemon(0, 0);
-		set_report(&syslog);
 	}
 
 	/* Insert initial watchers */
