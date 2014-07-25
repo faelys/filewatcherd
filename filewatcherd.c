@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
+#include <signal.h>
 
 #include <sys/types.h>
 #include <sys/event.h>
@@ -129,6 +130,11 @@ main(int argc, char **argv) {
 	/******************
 	 * INITIALIZATION *
 	 ******************/
+
+	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR) {
+		log_signal(SIGCHLD);
+		return EXIT_FAILURE;
+	}
 
 	/* Try to open and read the watchtab */
 	tab_fd = open(tabpath, O_RDONLY | O_CLOEXEC);

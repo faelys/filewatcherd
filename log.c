@@ -245,6 +245,14 @@ log_setuid(uid_t uid) {
 }
 
 
+/* log_signal - signal() failed */
+void
+log_signal(int sig) {
+	report(LOG_ERR, "Unable to setup signal handler for \"%s\": %s", 
+		strsignal(sig), strerror(errno));
+}
+
+
 /* log_watchtab_invalid_action - invalid action line in watchtab */
 void
 log_watchtab_invalid_action(const char *filename, unsigned line_no) {
