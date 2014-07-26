@@ -143,6 +143,10 @@ log_setgid(gid_t gid);
 void
 log_setuid(uid_t uid);
 
+/* log_signal - signal() failed */
+void
+log_signal(int sig);
+
 /* log_watchtab_invalid_action - invalid action line in watchtab */
 void
 log_watchtab_invalid_action(const char *filename, unsigned line_no);
