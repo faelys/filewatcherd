@@ -1,0 +1,49 @@
+.\" Copyright (c) 2015, Natacha Porté
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.Dd October 19, 2015
+.Dt FILEWATCHERD 8
+.Os
+.Sh NAME
+.Nm filewatcherd
+.Nd run commands in response to file changes
+.Sh SYNOPSIS
+.Nm
+.Op Fl dh
+.Op Fl w Ar delay_ms
+.Ar watchtab
+.Sh DESCRIPTION
+.Nm
+is a daemon inspired by cron, that run commands based on file
+changes instead of time.
+In principle it is similar to incron, but it's simpler, more limited,
+and does not depend on anything outside of FreeBSD base.
+.Pp
+.Ar watchtab
+describes which paths and what events to watch, and commands to run
+when triggered.
+.Sh OPTIONS
+The following options are supported by
+.Nm :
+.Bl -tag -width "foo"
+.It Fl d , Cm --foreground
+Don't fork to background and log to stderr.
+.It Fl h , Cm --help
+Display help text.
+.It Fl w Ar delay_ms , Cm --wait Ar delay_ms
+Wait that number of milliseconds after
+.Ar watchtag
+changes before reloading it.
+.El
+.Sh SEE ALSO
+.Xr watchtab 5

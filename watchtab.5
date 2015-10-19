@@ -1,0 +1,104 @@
+.\" Copyright (c) 2015, Natacha Porté
+.\"
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies.
+.\"
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\" WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\" MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\" ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.Dd October 19, 2015
+.Dt WATCHTAB 5
+.Os
+.Sh NAME
+.Nm watchtab
+.Nd tables for driving filewatcherd
+.Sh DESCRIPTION
+A
+.Nm
+file contains instructions to the
+.Xr filewatcherd 8
+daemon of the general form: ``run this command when these events happen
+to the file at this path''.
+.Pp
+Blank lines and leading spaces and tabs are ignored.
+Lines whose first non-space character is a pound-sign (#) are comments,
+and are ignored. Note that comments are not allowed on the same line as
+.Nm
+commands, since they will be taken to be part of the command.
+Similarly, comments are not allowed on the same line as
+environment variable settings.
+.Pp
+An active line of a
+.Nm
+will be either an environment setting or a command.
+An environment setting is of the form
+.Bd -literal
+    name = value
+.Ed
+.Pp
+where the spaces around the equal-sign (=) are optional, and any subsequent
+non-leading spaces in
+.Em value
+will be part of the value assigned to
+.Em name .
+Note that
+.Em name
+cannot contain any blackslash or tabulation.
+.Pp
+Several environment variables are set up automatically by the
+.Xr filewatcherd 8
+daemon.
+.Ev LOGNAME
+and
+.Ev USER
+are set to the command user,
+.Ev HOME
+is set to the home directory of the command user, unless explicitly overriden.
+.Ev TRIGGER
+is set to the path that has triggered the command execution.
+.Pp
+The format of a
+.Nm
+command is a tabulation-separated sequence of fields, interpreted as follow:
+.Bl -tag -width command
+.It path
+Path of the file to watch
+.It events
+Set of events which trigger the command. It can either be a single
+star-sign (*), or a punctuation-separated list of names among:
+DELETE, WRITE, EXTEND, ATTRIB, LINK, RENAME and REVOKE. Their meaning is
+defined in
+.Xr kqueue 2
+for
+.Va fflags
+for EVFILT_VNODE.
+.It delay
+Number of seconds, allowing a decimal point, between the trigger and when
+the command is actually run.
+.It user
+User, and optionally group preceded by a colon sign (:), to change to
+before running the command.
+.It chroot
+Path of a directory in which to chroot before running the command.
+.It command
+The command to run.
+.El
+When less than 6 fields are given in a command line, the
+.Va chroot
+value is considered omitted, and chroot will be performed.
+When less than 5 fields are given, the
+.Va user
+value is considered omitted, and no setuid or setgid will be performed.
+When less than 4 fields are given, the
+.Va delay
+value is considered as zero.
+It is an error to provide less than 3 fields.
+.Sh SEE ALSO
+.Xr crontab 5
+.Xr filewatcherd 8
+.Xr kqueue 2
