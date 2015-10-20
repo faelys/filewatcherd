@@ -11,7 +11,7 @@
 .\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-.Dd October 19, 2015
+.Dd October 20, 2015
 .Dt FILEWATCHERD 8
 .Os
 .Sh NAME
@@ -32,17 +32,16 @@ and does not depend on anything outside of FreeBSD base.
 .Ar watchtab
 describes which paths and what events to watch, and commands to run
 when triggered.
-.Sh OPTIONS
-The following options are supported by
-.Nm :
+.Pp
+The options are as follows:
 .Bl -tag -width "foo"
-.It Fl d , Cm --foreground
+.It Fl d , Fl Fl foreground
 Don't fork to background and log to stderr.
-.It Fl h , Cm --help
+.It Fl h , Fl Fl help
 Display help text.
-.It Fl w Ar delay_ms , Cm --wait Ar delay_ms
+.It Fl w Ar delay_ms , Fl Fl wait Ar delay_ms
 Wait that number of milliseconds after
-.Ar watchtag
+.Ar watchtab
 changes before reloading it.
 .El
 .Sh SEE ALSO

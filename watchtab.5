@@ -11,7 +11,7 @@
 .\" WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-.Dd October 19, 2015
+.Dd October 20, 2015
 .Dt WATCHTAB 5
 .Os
 .Sh NAME
@@ -67,7 +67,7 @@ The format of a
 command is a tabulation-separated sequence of fields, interpreted as follow:
 .Bl -tag -width command
 .It path
-Path of the file to watch
+Path of the file to watch.
 .It events
 Set of events which trigger the command. It can either be a single
 star-sign (*), or a punctuation-separated list of names among:
@@ -88,6 +88,7 @@ Path of a directory in which to chroot before running the command.
 .It command
 The command to run.
 .El
+.Pp
 When less than 6 fields are given in a command line, the
 .Va chroot
 value is considered omitted, and chroot will be performed.
@@ -99,6 +100,6 @@ When less than 4 fields are given, the
 value is considered as zero.
 It is an error to provide less than 3 fields.
 .Sh SEE ALSO
-.Xr crontab 5
+.Xr kqueue 2 ,
+.Xr crontab 5 ,
 .Xr filewatcherd 8
-.Xr kqueue 2
