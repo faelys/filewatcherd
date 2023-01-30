@@ -84,7 +84,7 @@ main(int argc, char **argv) {
 	struct kevent event;
 	struct watch_entry *wentry;
 	pid_t pid;
-	char c;
+	int c;
 	char *s;
 
 
